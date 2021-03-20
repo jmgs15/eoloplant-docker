@@ -42,3 +42,9 @@ services:
     image: andreajuanmaurjc/planner
     depends_on:
       - rabbitmq
+  weatherservice:
+    image: andreajuanmaurjc/weatherservice:v1
+    environment:
+      - GRPC_HOST=weatherservice
+    ports:
+      - 9090:9090
