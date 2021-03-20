@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class TopoClient {
 
-    private static final String TOPO_HOST = "localhost";
+    private static final String TOPO_HOST = "toposervice";
     private static final int TOPO_PORT = 8080;
 
     @Async
