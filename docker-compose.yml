@@ -1,14 +1,14 @@
 version: "3.9"
 services:
-  # mysql:
-  #   image: mysql:8.0.23
-  #   volumes:
-  #     - ./data/mysql:/var/lib/mysql
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=password
-  #     - MYSQL_DATABASE=eoloplantsDB
-  #   ports:
-  #     - 3306:3306
+  mysql:
+    image: mysql:8.0.23
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=eoloplantsDB
+    ports:
+      - 3306:3306
   mongo:
     image: mongo:3.6.22
     volumes:
@@ -20,18 +20,18 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-  # server:
-  #   image: andreajuanmaurjc/server
-  #   environment:
-  #     - MYSQL_HOST=mysql
-  #     - RABBIT_HOST=amqp://guest:guest@rabbitmq:5672
-  #   ports:
-  #     - 3000:3000
-  #   restart: on-failure
-  #   depends_on:
-  #     - mysql
-  #     - rabbitmq
-  #   command: ["./wait-for-it.sh", "mysql:3306", "--", "node", "src/server.js"]
+  server:
+    image: andreajuanmaurjc/server
+    environment:
+      - MYSQL_HOST=mysql
+      - RABBIT_HOST=amqp://guest:guest@rabbitmq:5672
+    ports:
+      - 3000:3000
+    restart: on-failure
+    depends_on:
+      - mysql
+      - rabbitmq
+    command: ["./wait-for-it.sh", "mysql:3306", "--", "node", "src/server.js"]
   toposervice:
     image: andreajuanmaurjc/toposervice
     ports:
@@ -40,7 +40,5 @@ services:
       - mongo
   planner:
     image: andreajuanmaurjc/planner
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
       - rabbitmq
