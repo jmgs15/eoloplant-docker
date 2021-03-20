@@ -5,6 +5,7 @@ import DebugLib from 'debug';
 const debug = new DebugLib('server:mysql');
 
 export default new Sequelize('eoloplantsDB', 'root', 'password', {
+    host: process.env.MYSQL_HOST,
     dialect: 'mysql',
     dialectModule: mysql2,
     logging: false
