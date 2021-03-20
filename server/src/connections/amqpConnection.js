@@ -9,7 +9,7 @@ export let amqpChannel;
 
 export async function connectAmqp() {
   
-  const URL = process.env.RABBIT_HOST;
+  const URL = process.env.SERVER_RABBIT_HOST;
 
   const conn = await connect(URL);
   amqpChannel = await conn.createChannel();

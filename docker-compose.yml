@@ -23,8 +23,9 @@ services:
   server:
     image: andreajuanmaurjc/server
     environment:
-      - MYSQL_HOST=mysql
-      - RABBIT_HOST=amqp://guest:guest@rabbitmq:5672
+      - SERVER_PORT=3000
+      - SERVER_MYSQL_HOST=mysql
+      - SERVER_RABBIT_HOST=amqp://guest:guest@rabbitmq:5672
     ports:
       - 3000:3000
     restart: on-failure
@@ -34,11 +35,29 @@ services:
     command: ["./wait-for-it.sh", "mysql:3306", "--", "node", "src/server.js"]
   toposervice:
     image: andreajuanmaurjc/toposervice
+    environment: 
+      - TOPOSERVICE_MONGO_HOST=mongo
+      - TOPOSERVICE_MONGO_PORT=27017
+      - TOPOSERVICE_MONGO_DATABASE=topo
     ports:
       - 8080:8080
     depends_on:
       - mongo
   planner:
     image: andreajuanmaurjc/planner
+    environment: 
+      - WEATHERSERVICE_URL=static://weatherservice:9090
+      - TOPOSERVICE_RABBIT_HOST=rabbitmq
+      - TOPOSERVICE_RABBIT_PORT=5672
+      - TOPOSERVICE_RABBIT_USERNAME=guest
+      - TOPOSERVICE_RABBIT_PASSWORD=guest
+      - TOPOSERVICE_HOST=toposervice
+      - TOPOSERVICE_PORT=8080
     depends_on:
       - rabbitmq
+  weatherservice:
+    image: andreajuanmaurjc/weatherservice:v1
+    environment:
+      - GRPC_HOST=weatherservice
+    ports:
+      - 9090:9090

@@ -1,34 +1,39 @@
-const {spawn} = require('child_process');
-
-function exec(serviceName, command) {
-
-  console.log(`Started service [${serviceName}]`);
-
-  let cmd = spawn(command, [], {cwd: './' + serviceName, shell: true});
-
-  cmd.stdout.on('data', function (data) {
+const { spawn } = require('child_process');
+const dockerHubUser = 'andreajuanmaurjc';
+ function build(serviceName, command){
+ 
+   console.log(`Stated service [${serviceName}]`);
+ 
+   let cmd = spawn(command, [], { cwd: serviceName, shell: true });
+   
+   cmd.stdout.on('data', function(data){
+     process.stdout.write(`[${serviceName}] ${data}`);
+   });
+ 
+   cmd.stderr.on('data', function(data){
+     process.stderr.write(`[${serviceName}] ${data}`);
+   });
+ }
+ 
+ function upload(image){
+   let command = `docker push ${image}`
+  let cmd = spawn(command, [], { shell: true });
+  cmd.stdout.on('data', function(data){
     process.stdout.write(`[${serviceName}] ${data}`);
   });
 
-  cmd.stderr.on('data', function (data) {
+  cmd.stderr.on('data', function(data){
     process.stderr.write(`[${serviceName}] ${data}`);
   });
+ }
 
-  return cmd;
-}
+ 
+ build('weatherservice', `pack build ${dockerHubUser}/weatherservice:v1 --path . --builder gcr.io/buildpacks/builder:v1`);
+ build('toposervice', `mvn compile jib:build -Dimage=${dockerHubUser}/toposervice`);
+ build('server',`docker build -t ${dockerHubUser}/server .`);
+ build('planner',`docker build -t ${dockerHubUser}/planner .`);
 
-const services = new Map();
-
-services.set('weatherservice', exec('weatherservice', 'node src/server.js'));
-services.set('toposervice', exec('toposervice', 'mvn spring-boot:run'));
-services.set('server', exec('server', 'node src/server.js'));
-services.set('planner', exec('planner', 'mvn spring-boot:run'));
-
-process.on('SIGINT', async () => {
-  for (var [name, cmd] of services) {
-    console.log(`Killing service [${name}]`);
-    cmd.stdin.pause();
-    await cmd.kill();
-  }
-  process.exit();
-});
+ upload(`${dockerHubUser}/weatherservice:v1`);
+ upload(`${dockerHubUser}/toposervice`);
+ upload(`${dockerHubUser}/server`);
+ upload(`${dockerHubUser}/planner`);

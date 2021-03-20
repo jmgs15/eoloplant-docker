@@ -5,5 +5,5 @@ import { createExpressServer } from './connections/restConnection.js';
 const server = createExpressServer();
 createWsServer(server, '/eoloplants')
 await connectAmqp();
-
-server.listen(3000, () => console.log('Server listening on port 3000!'));
+let port = process.env.SERVER_PORT | 3000;
+server.listen(port, () => console.log(`Server listening on port ${port}!`));
