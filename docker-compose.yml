@@ -2,8 +2,8 @@ version: "3.9"
 services:
   mysql:
     image: mysql:8.0.23
-    # volumes:
-    #   - ./server/data:/var/lib/mysql
+    volumes:
+      - ./data/mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=eoloplantsDB
@@ -12,7 +12,7 @@ services:
   # mongo:
   #   image: mongo:3.6.22
   #   volumes:
-  #     - ./mongo:/data/db
+  #     - ./data/mongo:/data/db
   #   ports:
   #     - 27017:27017
   rabbitmq:
