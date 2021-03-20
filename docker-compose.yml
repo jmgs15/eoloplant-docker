@@ -15,7 +15,7 @@ services:
   #     - ./mongo:/data/db
   #   ports:
   #     - 27017:27017
-  rabbit:
+  rabbitmq:
     image: rabbitmq:3.8.14
     ports:
       - 5672:5672
@@ -24,9 +24,10 @@ services:
     image: andreajuanmaurjc/server
     environment:
       - MYSQL_HOST=mysql
-      - RABBIT_HOST=rabbit
+      - RABBIT_HOST=amqp://guest:guest@rabbitmq:5672
     ports:
       - 3000:3000
+    restart: on-failure
     depends_on:
       - mysql
     command: ["./wait-for-it.sh", "mysql:3306", "--", "node", "src/server.js"]
