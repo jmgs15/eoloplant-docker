@@ -29,7 +29,7 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	"runArgs": ["--network=host"],
+	"runArgs": ["--network=host","--env-file",".devcontainer/devcontainer.env"],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "java -version",
