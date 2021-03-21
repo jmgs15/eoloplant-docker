@@ -1,33 +1,40 @@
-# EoloPlanner
+# EoloPlanner - DOCKER
 
-Este proyecto es una aplicación distribuida formada por diferentes servicios que se comunican entre sí usando API REST, gRPC y RabbitMQ. La aplicación ofrece un interfaz web que se comunica con el servidor con API REST y WebSockets. 
+El desarrollo de la aplicación se puede llevar a cabo de dos formas:
+1 - Instalando todas las utilidades (npm, nodejs, java, maven) en local, y haciendo sus correspondientes despliegues.
+2 - Con el VSCode abriendo cada proyecto como un DevContainer, los cuales ya están configurados para que tengan las utilidades necesarias instaladas y haciendo los correspondientes despligues.
 
-Algunos servicios están implementados con Node.js/Express y otros con Java/Spring. Estas tecnologías deben estar instaladas en el host para poder construir y ejecutar los servicios. También se requiere Docker para ejecutar los servicios auxiliares (MySQL, MongoDB y RabbitMQ).
+Por lo tanto, para el caso de la ejecución, también se puede llevar a cabo de dos formas:
 
-Para la construcción de los servicios y su ejecución, así como la ejecución de los servicios auxiliares requeridos se usan scripts implementados en Node.js. Posiblemente no sea el lenguaje de scripting más utilizado para este caso de uso, pero en este caso concreto facilita la interoperabilidad en varios SOs y es sencillo.
-
-Esta solución está basada en el trabajo entregado por el alumno Miguel García Sanguino.
-
-## Iniciar servicios auxiliares: MongoDB, MySQL y RabbitMQ
-
-Los servicios auxiliares se ejecutan con la tecnología de contenedores Docker usando el siguiente comando:
-
+1 - Formato producción: ejecutando el script `exec.js` (realiza el build de las imágenes docker y las sube a dockerHub) y posteriormente ejecutando el `docker-compose.yml` (levanta cada uno de los servicios en un docker todos conectados entre sí)
+``` shell
+node exec.js
+docker-compose up
 ```
-$ node exec_aux_services.js
-```
+2 - Formato desarrollo:
+- Levantando los servicios de `mongo`, `mysql` y `rabbit` en un docker cada uno con el fichero docker-compose-dev.yml, con su correspondiente 
+  ``` shell
+  docker-compose -f docker-compose-dev.yml up
+  ```
 
-## Construir servicios
+- Abriendo cada servicio (`planner`, `server`, `toposervice`, `weatherservice`) en una ventana de VSCode como DevContainer, compilándolos y ejecutando. Pasamos a detallar como levantar cada servicio en el DevContainer, Habría que ejecutar los siguientes comandos en la carpeta raíz de cada proyecto:
+  - Planner:
+  ``` shell
+  mvn spring-boot:run
+  ```
 
-Descarga las dependencias y construye los proyectos. En proyectos Java usa Maven. En proyectos Node usa NPM:
-
-```
-$ node build.js
-```
-
-## Ejecutar servicios
-
-Ejecuta los servicios. En proyectos Java usa Maven. En proyectos Node usa esta tecnología directamente:
-
-```
-$ node exec.js
-```
+  - Server:
+  ``` shell
+  npm install
+  node src/server.js
+  ```
+  - TopoService: Cambiar en el `pom.xml` el plugin `com.google.cloud.tools` por `org.springframework.boot` que está comentado
+  ``` shell
+  mvn spring-boot:run
+  ```
+  - WeatherService:
+  ``` shell
+  npm install
+  npm rebuild
+  node src/server.js
+  ```
