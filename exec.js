@@ -6,6 +6,7 @@ function build(serviceName, command) {
 
   spawnSync(command, [], {
     shell: true,
+    cwd: serviceName,
     stdio: 'inherit'
   });
 }
@@ -19,13 +20,11 @@ function upload(image) {
   });
 }
 
-
 build('weatherservice', `pack build ${dockerHubUser}/weatherservice:v1 --path . --builder gcr.io/buildpacks/builder:v1`);
 build('toposervice', `mvn compile jib:build -Dimage=${dockerHubUser}/toposervice`);
 build('server', `docker build -t ${dockerHubUser}/server .`);
 build('planner', `docker build -t ${dockerHubUser}/planner .`);
 
 upload(`${dockerHubUser}/weatherservice:v1`);
-upload(`${dockerHubUser}/toposervice`);
 upload(`${dockerHubUser}/server`);
 upload(`${dockerHubUser}/planner`);
