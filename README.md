@@ -1,7 +1,9 @@
 # EoloPlanner - DOCKER
 
 El desarrollo de la aplicación se puede llevar a cabo de dos formas:
+
 1 - Instalando todas las utilidades (npm, nodejs, java, maven) en local, y haciendo sus correspondientes despliegues.
+
 2 - Con el VSCode abriendo cada proyecto como un DevContainer, los cuales ya están configurados para que tengan las utilidades necesarias instaladas y haciendo los correspondientes despligues.
 
 Por lo tanto, para el caso de la ejecución, también se puede llevar a cabo de dos formas:
